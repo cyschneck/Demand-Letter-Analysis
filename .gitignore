@@ -127,6 +127,3 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-
-# Ignore Demand Letters (private)
-demand_letter/*
