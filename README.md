@@ -34,5 +34,9 @@ Result of execution will produce x number of files based on the child directorie
 
 ### Analysis
 TODO: Word Frequency
+
 TODO: Changes in Word Usage
+
+TODO: Co-Occurrence in Letters
+
 TODO: NLP
