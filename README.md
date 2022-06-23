@@ -1,8 +1,6 @@
 # Anti-Racism Demand Letters Analysis
 2020 Anti-Racism Demand Letters Analysis
 
-_Note_: demand_letters directory is empty to preserve privacy (controlled in the .gitignore)
-
 ## Dependencies
 Requires Python 3.7.3
 
@@ -13,6 +11,8 @@ pytesseract==0.3.7
 python-docx==0.8.11
 PyPDF2==2.3.1
 ```
+
+Additional dependencies can downloaded via terminal
 
 ```
 pip install -r requirements.txt
