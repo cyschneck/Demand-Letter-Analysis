@@ -32,5 +32,7 @@ python3 pre_processing_demand_letters.py
 
 Result of execution will produce x number of files based on the child directories beneath the root `demand_letters` directory. One file output will be generated for each child directory with the combined output of all the letters/files within the child directory
 
-### NLP
-TODO
+### Analysis
+TODO: Word Frequency
+TODO: Changes in Word Usage
+TODO: NLP
