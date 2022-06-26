@@ -7,6 +7,7 @@ import PyPDF2 # Read .pdf files
 import pytesseract
 from PIL import Image
 from pdf2image import convert_from_path
+import easyocr # Read jpegs
 
 list_of_demand_letters = [] # total list of all letters and their locations
 
@@ -102,7 +103,9 @@ def convertJPEGToText(jpeg_file_path):
 	if not is_skipped:
 		# Iterate through images stored and convert image to text
 		# Use OCR(Optical Character Recognition) to return text
-		jpeg_text = str(((pytesseract.image_to_string(Image.open(jpeg_file_path)))))
+		reader = easyocr.Reader(lang_list=['en'], gpu=False, verbose=False)
+		jpeg_text = reader.readtext(jpeg_file_path, detail=0, batch_size=2, paragraph=True)
+		jpeg_text = " ".join(jpeg_text)
 	else:
 		jpeg_text = ''
 
@@ -145,20 +148,22 @@ if __name__ == '__main__':
 		file_output_dict[file_output_text_name] = [] # set to empty list to be populated with each file_letter
 	
 	for i, file_letter in enumerate(list_of_demand_letters):
-		print("Processing: {0} [{1}]...".format(file_letter, os.path.getsize(file_letter)))
+		#print("Processing: {0} [{1}]...".format(file_letter, os.path.getsize(file_letter)))
 		file_to_write_to = child_direct_dict[file_letter.split("/")[1]]
 		extension = file_letter.split(".")[-1]
 
 		if extension == "docx":
-			docx_text, is_docx_skipped = convertDocxToText(file_letter)
+			'''docx_text, is_docx_skipped = convertDocxToText(file_letter)
 			file_output_dict[file_to_write_to].append(docx_text)
 			if not is_docx_skipped:
 				print("{0}/{1} - {2}".format(i, len(list_of_demand_letters), file_letter))
 			else:
 				skipped_files_too_large.append(file_letter)
 				print("{0}/{1} - {2} -- SKIPPED".format(i, len(list_of_demand_letters), file_letter))
+				'''
 
 		if extension == "pdf":
+			'''
 			pdf_text, is_pdf_skipped = convertPDFToText(file_letter)
 			file_output_dict[file_to_write_to].append(pdf_text)
 			if not is_pdf_skipped:
@@ -166,9 +171,10 @@ if __name__ == '__main__':
 			else:
 				skipped_files_too_large.append(file_letter)
 				print("{0}/{1} - {2} -- SKIPPED".format(i, len(list_of_demand_letters), file_letter, os.path.getsize(file_letter)))
-			#break
+			#break'''
 
 		if extension == "jpeg":
+			print("Processing: {0} [{1}]...".format(file_letter, os.path.getsize(file_letter)))
 			jpeg_text, is_jpeg_skipped = convertJPEGToText(file_letter)
 			file_output_dict[file_to_write_to].append(jpeg_text)
 			if not is_jpeg_skipped:
@@ -176,12 +182,13 @@ if __name__ == '__main__':
 			else:
 				skipped_files_too_large.append(file_letter)
 				print("{0}/{1} - {2} -- SKIPPED".format(i, len(list_of_demand_letters), file_letter))
+			print(jpeg_text)
 
 		# Any other file types will be excluded
 		if extension != "docx" and extension != "pdf" and extension != "jpeg":
 			print("Unsupported file type for conversion: {0}".format(file_letter)) # print out additional file types for testing
 
-	print(file_output_dict)
+	#print(file_output_dict)
 	# Save long text list as a text file to improve preformance
 	for file_output_name, file_output_text_list in file_output_dict.items():
 		#print("{0} Files Saved as Text = {1}".format(file_output_name, len(file_output_text_list)))

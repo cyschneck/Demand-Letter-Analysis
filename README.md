@@ -5,11 +5,13 @@
 Requires Python 3.7.3
 
 ```
-Pillow==6.0.0
+Pillow==9.1.1
 pdf2image==1.16.0
 pytesseract==0.3.7
 python-docx==0.8.11
 PyPDF2==2.3.1
+easyocr==1.5.0
+torchvision==0.12.0
 ```
 
 Additional dependencies can downloaded via terminal
