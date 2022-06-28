@@ -41,6 +41,18 @@ def getFileTypes():
 			extension_types_and_instances_dict[extension] += 1
 	return extension_types_and_instances_dict
 
+def convertTxtFileToText(txt_file_path):
+	# return a text string from a txt file
+	file_as_text = ''
+
+	with open(txt_file_path) as txt_file:
+		all_lines = txt_file.readlines()
+		for i, line in enumerate(all_lines): # strip newline characters
+			all_lines[i] = line.strip()
+		file_as_text = " ".join(all_lines)
+
+	return file_as_text
+
 def convertDocxToText(docx_file_path):
 	# return a text string of docx file
 	file_as_text = ''
@@ -152,18 +164,22 @@ if __name__ == '__main__':
 		file_to_write_to = child_direct_dict[file_letter.split("/")[1]]
 		extension = file_letter.split(".")[-1]
 
-		if extension == "docx":
-			'''docx_text, is_docx_skipped = convertDocxToText(file_letter)
+		if extension == "txt": # Text Files
+			print("Processing: {0} [{1}]...".format(file_letter, os.path.getsize(file_letter)))
+			txt_text = convertTxtFileToText(file_letter)
+			file_output_dict[file_to_write_to].append(txt_text)
+			print("{0}/{1} - {2}".format(i, len(list_of_demand_letters), file_letter))
+
+		if extension == "docx": # DocX Files
+			docx_text, is_docx_skipped = convertDocxToText(file_letter)
 			file_output_dict[file_to_write_to].append(docx_text)
 			if not is_docx_skipped:
 				print("{0}/{1} - {2}".format(i, len(list_of_demand_letters), file_letter))
 			else:
 				skipped_files_too_large.append(file_letter)
 				print("{0}/{1} - {2} -- SKIPPED".format(i, len(list_of_demand_letters), file_letter))
-				'''
 
-		if extension == "pdf":
-			'''
+		if extension == "pdf": # PDF Files
 			pdf_text, is_pdf_skipped = convertPDFToText(file_letter)
 			file_output_dict[file_to_write_to].append(pdf_text)
 			if not is_pdf_skipped:
@@ -171,10 +187,8 @@ if __name__ == '__main__':
 			else:
 				skipped_files_too_large.append(file_letter)
 				print("{0}/{1} - {2} -- SKIPPED".format(i, len(list_of_demand_letters), file_letter, os.path.getsize(file_letter)))
-			#break'''
 
 		if extension == "jpeg":
-			print("Processing: {0} [{1}]...".format(file_letter, os.path.getsize(file_letter)))
 			jpeg_text, is_jpeg_skipped = convertJPEGToText(file_letter)
 			file_output_dict[file_to_write_to].append(jpeg_text)
 			if not is_jpeg_skipped:
@@ -182,10 +196,10 @@ if __name__ == '__main__':
 			else:
 				skipped_files_too_large.append(file_letter)
 				print("{0}/{1} - {2} -- SKIPPED".format(i, len(list_of_demand_letters), file_letter))
-			print(jpeg_text)
+
 
 		# Any other file types will be excluded
-		if extension != "docx" and extension != "pdf" and extension != "jpeg":
+		if extension != "docx" and extension != "pdf" and extension != "jpeg" and extension != "txt":
 			print("Unsupported file type for conversion: {0}".format(file_letter)) # print out additional file types for testing
 
 	#print(file_output_dict)
@@ -195,7 +209,8 @@ if __name__ == '__main__':
 		with open(os.path.join("demand_letters_output", file_output_name), "w") as write_text_file:
 			# convert list to text version of list
 			for text in file_output_text_list:
-				write_text_file.write(str(text)) # overwrite
+				cleaned_up_text = str(text).lower()
+				write_text_file.write(cleaned_up_text) # overwrite
 				write_text_file.write("\n")
 	print("\nSkipped Files Due to MemoryError [{0}]: {1}".format(len(skipped_files_too_large), skipped_files_too_large))
 	
