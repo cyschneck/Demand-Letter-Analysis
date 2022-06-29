@@ -160,12 +160,11 @@ if __name__ == '__main__':
 		file_output_dict[file_output_text_name] = [] # set to empty list to be populated with each file_letter
 	
 	for i, file_letter in enumerate(list_of_demand_letters):
-		#print("Processing: {0} [{1}]...".format(file_letter, os.path.getsize(file_letter)))
+		print("Processing: {0} [{1}]...".format(file_letter, os.path.getsize(file_letter)))
 		file_to_write_to = child_direct_dict[file_letter.split("/")[1]]
 		extension = file_letter.split(".")[-1]
 
 		if extension == "txt": # Text Files
-			print("Processing: {0} [{1}]...".format(file_letter, os.path.getsize(file_letter)))
 			txt_text = convertTxtFileToText(file_letter)
 			file_output_dict[file_to_write_to].append(txt_text)
 			print("{0}/{1} - {2}".format(i, len(list_of_demand_letters), file_letter))
