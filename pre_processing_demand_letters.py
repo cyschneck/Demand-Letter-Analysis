@@ -1,4 +1,4 @@
-# Sentiment Analysis of Anti-Racism Letters
+# Pre-Processing of Anti-Racism Letters
 # python3 demand_letter_analysis.py
 import os
 import re
@@ -126,7 +126,6 @@ def convertJPEGToText(jpeg_file_path):
 ########################################################################
 
 #TODO: clean up documents with unicode values and non-alphabetical characters
-#TODO: fix reading of JPEGs
 
 if __name__ == '__main__':
 	# track time of python program
