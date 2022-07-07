@@ -1,6 +1,7 @@
 # NPL and Sentiment Analysis of Anti-Racism Letters
 # python3 demand_letter_analysis.py
 import os
+import math
 import matplotlib.pyplot as plt
 
 import nltk
@@ -94,8 +95,10 @@ def sentimentAnalysis(plot_title_from_file_name, root_dir, file_as_tokens):
 		sent_dict_postive[i] = sent_dict_for_sentence["pos"]
 		sent_dict_neutral[i] = sent_dict_for_sentence["neu"]
 		sent_dict_negative[i] = sent_dict_for_sentence["neg"]
-	
-	color_plot = {"Postive": "Reds", "Negative": "Blues", "Neutral": "gray"}
+
+	color_plot = {"Postive": "Reds", "Negative": "Blues", "Neutral": "gray"} # colors for plot (cmap)
+
+	# Plot Sentiment Individually
 	def plotSentimentIndvidually(polarity_name, polarity_dict):
 		# Plot
 		fig = plt.figure(figsize=(12,12), dpi=100)
@@ -104,21 +107,45 @@ def sentimentAnalysis(plot_title_from_file_name, root_dir, file_as_tokens):
 		plt.xticks(rotation=90)
 		plt.xlabel("Sentence Piece")
 		plt.ylabel("{0} Sentiment %".format(polarity_name))
-		plt.show()
 		fig.savefig('{0}/{1}_{2}_sentiment.png'.format(root_dir, 
 														plot_title_from_file_name.replace(" ", "_").lower(),
 														polarity_name.lower()))
-	# Plot Sentiment Individually
 	plotSentimentIndvidually("Postive", sent_dict_postive)
 	plotSentimentIndvidually("Neutral", sent_dict_neutral)
 	plotSentimentIndvidually("Negative", sent_dict_negative)
-	
+
 	# Plot as Group
 	fig = plt.figure(figsize=(12,12), dpi=100)
 	plt.title("{0}: Postive/Negative Sentiment".format(plot_title_from_file_name))
 	plt.scatter(sent_dict_postive.keys(), sent_dict_postive.values(), c=[i * 10 for i in sent_dict_postive.values()], cmap=color_plot["Postive"])
 	#plt.scatter(sent_dict_neutral.keys(), sent_dict_neutral.values(), c=[i * 10 for i in sent_dict_neutral.values()], cmap=color_plot["Neutral"])
 	plt.scatter(sent_dict_negative.keys(), sent_dict_negative.values(), c=[i * 10 for i in sent_dict_negative.values()], cmap=color_plot["Negative"])
+	plt.xticks(rotation=90)
+	plt.xlabel("Sentence Piece")
+	plt.ylabel("Sentiment %")
+	fig.savefig('{0}/{1}_pos_and_neg_sentiment.png'.format(root_dir, plot_title_from_file_name.replace(" ", "_").lower()))
+
+	# Plot Trends by Ploting a Line Graph for Every X
+	size_of_text_chunks = len(sent_dict_postive.keys()) - 1
+	average_every_x = 25 # average the sentiment of x sentences
+	average_pos_dict = {}
+	average_neg_dict = {}
+	for i in range(0, size_of_text_chunks, math.floor(size_of_text_chunks/average_every_x)):
+		pos_polarity_values = []
+		neg_polarity_values = []
+		for j in range(i, i+average_every_x-1):
+			if j in sent_dict_postive.keys() and j in sent_dict_negative.keys():
+				pos_polarity_values.append(sent_dict_postive[j])
+				neg_polarity_values.append(sent_dict_negative[j])
+		average_pos_dict[i] = sum(pos_polarity_values) / len(pos_polarity_values)
+		average_neg_dict[i] = sum(neg_polarity_values) / len(neg_polarity_values)
+
+	fig = plt.figure(figsize=(12,12), dpi=100)
+	plt.title("{0}: Trends in Sentiment".format(plot_title_from_file_name))
+	plt.scatter(sent_dict_postive.keys(), sent_dict_postive.values(), c=[i * 10 for i in sent_dict_postive.values()], cmap=color_plot["Postive"])
+	plt.scatter(sent_dict_negative.keys(), sent_dict_negative.values(), c=[i * 10 for i in sent_dict_negative.values()], cmap=color_plot["Negative"])
+	plt.plot(list(average_pos_dict.keys()), list(average_pos_dict.values()), c="red")
+	plt.plot(list(average_neg_dict.keys()), list(average_neg_dict.values()), c="blue")
 	plt.xticks(rotation=90)
 	plt.xlabel("Sentence Piece")
 	plt.ylabel("Sentiment %")
