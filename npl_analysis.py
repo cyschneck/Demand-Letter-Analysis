@@ -1,5 +1,5 @@
 # NPL and Sentiment Analysis of Anti-Racism Letters
-# python3 demand_letter_analysis.py
+# python3 npl_analysis.py
 import os
 import math
 import matplotlib.pyplot as plt
@@ -116,12 +116,12 @@ def sentimentAnalysis(plot_title_from_file_name, root_dir, file_as_tokens):
 
 	# Plot as Group
 	fig = plt.figure(figsize=(12,12), dpi=100)
-	plt.title("{0}: Postive/Negative Sentiment".format(plot_title_from_file_name))
+	plt.title("{0}: Postive and Negative Sentiment".format(plot_title_from_file_name))
 	plt.scatter(sent_dict_postive.keys(), sent_dict_postive.values(), c=[i * 10 for i in sent_dict_postive.values()], cmap=color_plot["Postive"])
 	#plt.scatter(sent_dict_neutral.keys(), sent_dict_neutral.values(), c=[i * 10 for i in sent_dict_neutral.values()], cmap=color_plot["Neutral"])
 	plt.scatter(sent_dict_negative.keys(), sent_dict_negative.values(), c=[i * 10 for i in sent_dict_negative.values()], cmap=color_plot["Negative"])
 	plt.xticks(rotation=90)
-	plt.xlabel("Sentence Piece")
+	plt.xlabel("Sentence #")
 	plt.ylabel("Sentiment %")
 	fig.savefig('{0}/{1}_pos_and_neg_sentiment.png'.format(root_dir, plot_title_from_file_name.replace(" ", "_").lower()))
 
@@ -147,7 +147,7 @@ def sentimentAnalysis(plot_title_from_file_name, root_dir, file_as_tokens):
 	plt.plot(list(average_pos_dict.keys()), list(average_pos_dict.values()), c="red")
 	plt.plot(list(average_neg_dict.keys()), list(average_neg_dict.values()), c="blue")
 	plt.xticks(rotation=90)
-	plt.xlabel("Sentence Piece")
+	plt.xlabel("Sentence #")
 	plt.ylabel("Sentiment %")
 	plt.show()
 	fig.savefig('{0}/{1}_pos_and_neg_sentiment.png'.format(root_dir, plot_title_from_file_name.replace(" ", "_").lower()))
