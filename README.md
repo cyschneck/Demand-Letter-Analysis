@@ -5,12 +5,13 @@
 Requires Python 3.7.3
 
 ```
-Pillow==9.1.1
+easyocr==1.5.0
+nltk==3.7
 pdf2image==1.16.0
+Pillow==9.1.1
+PyPDF2==2.3.1
 pytesseract==0.3.7
 python-docx==0.8.11
-PyPDF2==2.3.1
-easyocr==1.5.0
 torchvision==0.12.0
 ```
 
@@ -35,10 +36,27 @@ python3 pre_processing_demand_letters.py
 Result of execution will produce x number of files based on the child directories beneath the root `demand_letters` directory. One file output will be generated for each child directory with the combined output of all the letters/files within the child directory
 
 ### Analysis
-TODO: Word Frequency
+Run NPL Script to read from `demand_letters_output` to produce NPL analysis results
 
-TODO: Changes in Word Usage
+```python
+python3 npl_analysis.py
+```
+Overview Per Text File Results: (Example from 2020_letters.txt)
 
-TODO: Co-Occurrence in Letters
+#### Word Frequency
+![word_frequency+png](https://github.com/cyschneck/Demand-Letter-Analysis/blob/main/demand_letters_output/2020_letters_frequency_dist.png)
 
-TODO: NLP
+#### Co-Occurrence in Letters
+![bigram+png](https://github.com/cyschneck/Demand-Letter-Analysis/blob/main/demand_letters_output/2020_letters_frequency_dist_bigrams.png)
+![trigram+png](https://github.com/cyschneck/Demand-Letter-Analysis/blob/main/demand_letters_output/2020_letters_frequency_dist_trigrams.png)
+![quadgram+png](https://github.com/cyschneck/Demand-Letter-Analysis/blob/main/demand_letters_output/2020_letters_frequency_dist_quadgrams.png)
+
+#### Sentiment Analysis
+Postive Sentiment
+![postive_sentiment+png](https://github.com/cyschneck/Demand-Letter-Analysis/blob/main/demand_letters_output/2020_letters_postive_sentiment.png)
+Negative Sentiment
+![negative_sentiment+png](https://github.com/cyschneck/Demand-Letter-Analysis/blob/main/demand_letters_output/2020_letters_negative_sentiment.png)
+Trends in Sentiment
+![trends_sentiment+png](https://github.com/cyschneck/Demand-Letter-Analysis/blob/main/demand_letters_output/2020_letters_pos_and_neg_sentiment.png)
+
+## TODO: Compare Between Text Files
