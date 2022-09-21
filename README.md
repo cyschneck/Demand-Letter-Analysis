@@ -60,3 +60,4 @@ Trends in Sentiment
 ![trends_sentiment+png](https://github.com/cyschneck/Demand-Letter-Analysis/blob/main/demand_letters_output/2020_letters_pos_and_neg_sentiment.png)
 
 ## TODO: Compare Between Text Files
+TODO
