@@ -3,6 +3,7 @@
 import os
 import math
 import matplotlib.pyplot as plt
+plt.rcParams.update({'figure.max_open_warning': 0})
 
 import nltk
 nltk.download('punkt') # Frequency Distribution
@@ -10,7 +11,9 @@ nltk.download('stopwords') # Stopwords for cleanup
 nltk.download('vader_lexicon') # Sentiment Analysis via VADER (Valence Aware Dictionary for Sentiment Reasoning)
 from nltk.sentiment import SentimentIntensityAnalyzer # Sentiment Analysis via VADER
 
-most_freq_amount = 50
+most_freq_amount = 20
+
+occurrence_dict = {} # file_name, occurence
 
 def textAsToken(file_dir):
 	# Return the text file as tokens
@@ -31,26 +34,30 @@ def textAsToken(file_dir):
 def frequencyDistribution(plot_title_from_file_name, root_dir, file_as_tokens):
 	# Frequency Distribution of text
 	# Frequency Breakdown
+	plt_title = plot_title_from_file_name.replace(" ", "_").lower()
 	frequency_dist = nltk.FreqDist(file_as_tokens)
 
 	# Plot Frequency Distribution
 	frequencyDistribution_as_dict = dict(frequency_dist.most_common(most_freq_amount)) # convert to dict for plotting
+	occurrence_dict["{0}_single".format(plt_title)] = frequencyDistribution_as_dict
 	#print(frequencyDistribution_as_dict)
-	
+
 	fig = plt.figure(figsize=(12,12), dpi=100)
 	plt.title("{0}: Word Frequency".format(plot_title_from_file_name))
 	plt.bar(frequencyDistribution_as_dict.keys(), frequencyDistribution_as_dict.values())
 	plt.xticks(rotation=90)
-	plt.ylabel("Occurance")
+	plt.ylabel("Occurrence")
 	#plt.show()
-	fig.savefig('{0}/{1}_frequency_dist.png'.format(root_dir, plot_title_from_file_name.replace(" ", "_").lower()))
+	fig.savefig('{0}/{1}_frequency_dist.png'.format(root_dir, plt_title))
 
 def collocationDistribution(plot_title_from_file_name, root_dir, file_as_tokens):
 	# Find word combinations
+	plt_title = plot_title_from_file_name.replace(" ", "_").lower()
 
 	def plotNGram(n_gram_amount, n_gram_finder):
 		# Plot N-Grams
 		nGram_as_dict_temp = dict(n_gram_finder.ngram_fd.most_common(most_freq_amount)) # convert to dict for plotting
+		occurrence_dict["{0}_{1}".format(plt_title, n_gram_amount.lower())] = nGram_as_dict_temp
 		#print(nGram_as_dict_temp)
 
 		nGram_as_dict = {}
@@ -62,10 +69,11 @@ def collocationDistribution(plot_title_from_file_name, root_dir, file_as_tokens)
 		plt.title("{0}: {1}".format(plot_title_from_file_name, n_gram_amount))
 		plt.bar(nGram_as_dict.keys(), nGram_as_dict.values())
 		plt.xticks(rotation=90)
-		plt.ylabel("Occurance")
+		plt.ylabel("Occurrence")
 		fig.savefig('{0}/{1}_frequency_dist_{2}.png'.format(root_dir, 
 																	plot_title_from_file_name.replace(" ", "_").lower(),
 																	n_gram_amount.lower()))
+
 
 	# Bigrams: Two-Word Combinations
 	bigram_collocation_dist = nltk.collocations.BigramCollocationFinder.from_words(file_as_tokens)
@@ -149,8 +157,44 @@ def sentimentAnalysis(plot_title_from_file_name, root_dir, file_as_tokens):
 	plt.xticks(rotation=90)
 	plt.xlabel("Sentence #")
 	plt.ylabel("Sentiment %")
-	plt.show()
+	#plt.show()
 	fig.savefig('{0}/{1}_pos_and_neg_sentiment.png'.format(root_dir, plot_title_from_file_name.replace(" ", "_").lower()))
+
+def plotComparisons(root_directory, comparison_dict):
+	# Plot Comparisons Graphs to see if common words are used across letters
+	titles = list(comparison_dict.keys())
+	x_word_label = []
+	# collect a list of all the words in all the text
+	for text_title, occurrence_dict in comparison_dict.items():
+		temp_title_lst = []
+		for word, occurrence in occurrence_dict.items():
+			if word not in x_word_label:
+				x_word_label.append(word)
+	#print(x_word_label)
+
+	# create a list of lists for all texts with each word and their occurrence
+	titles_lst_of_lst = []
+	for i in titles:
+		titles_lst_of_lst.append([]) # create an empty list of lists for each title
+
+	# create a list of lists to track frequency of specific works to multi-group bar graph
+	for word in x_word_label:
+		for title, word_with_occurrence in comparison_dict.items():
+			if word in word_with_occurrence:
+				titles_lst_of_lst[titles.index(title)].append(word_with_occurrence[word])
+			else:
+				titles_lst_of_lst[titles.index(title)].append(0)
+
+	fig = plt.figure(figsize=(12,12), dpi=100)
+	word_type_title = titles[0].split("_")[-1]
+	plt.title("Comparisons for {0} Words".format(word_type_title.capitalize()))
+	for i, title in enumerate(titles):
+		plt.bar(x_word_label, titles_lst_of_lst[i], label = title) # plot multiple bar graphs in one graph
+	plt.xticks(rotation=90)
+	plt.ylabel("Occurrence")
+	plt.legend()
+	#plt.show()
+	fig.savefig('{0}/comparisons_{1}.png'.format(root_directory, word_type_title))
 
 if __name__ == '__main__':
 	# retrieve text from letters
@@ -170,3 +214,32 @@ if __name__ == '__main__':
 		frequencyDistribution(title_plot, root_directory, file_text_tokens)
 		collocationDistribution(title_plot, root_directory, file_text_tokens)
 		sentimentAnalysis(title_plot, root_directory, file_text_tokens)
+
+	# compare the frequency of common words between texts
+	comparison_dict_single = {}
+	comparison_dict_bigrams = {}
+	comparison_dict_trigrams = {}
+	comparison_dict_quadgrams = {}
+	for key, values in occurrence_dict.items():
+		if "single" in key:
+			comparison_dict_single[key] = values
+		if "bigrams" in key:
+			nGrams_dict = {}
+			for nGrams, amount in values.items():
+				nGrams_dict[' '.join(nGrams)] = amount # combine to form a single word to search
+			comparison_dict_bigrams[key] = nGrams_dict
+		if "trigrams" in key:
+			nGrams_dict = {}
+			for nGrams, amount in values.items():
+				nGrams_dict[' '.join(nGrams)] = amount # combine to form a single word to search
+			comparison_dict_trigrams[key] = nGrams_dict
+		if "quadgrams" in key:
+			nGrams_dict = {}
+			for nGrams, amount in values.items():
+				nGrams_dict[' '.join(nGrams)] = amount # combine to form a single word to search
+			comparison_dict_quadgrams[key] = nGrams_dict
+
+	plotComparisons(root_directory, comparison_dict_single)
+	plotComparisons(root_directory, comparison_dict_bigrams)
+	plotComparisons(root_directory, comparison_dict_trigrams)
+	plotComparisons(root_directory, comparison_dict_quadgrams)
