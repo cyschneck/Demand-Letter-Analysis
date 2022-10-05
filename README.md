@@ -59,5 +59,8 @@ Negative Sentiment
 Trends in Sentiment
 ![trends_sentiment+png](https://github.com/cyschneck/Demand-Letter-Analysis/blob/main/demand_letters_output/2020_letters_pos_and_neg_sentiment.png)
 
-## TODO: Compare Between Text Files
-TODO
+## Compare Between Text Files
+![comparisions_single+png](https://github.com/cyschneck/Demand-Letter-Analysis/blob/main/demand_letters_output/comparisons_single.png)
+![comparisions_bigrams+png](https://github.com/cyschneck/Demand-Letter-Analysis/blob/main/demand_letters_output/comparisons_bigrams.png)
+![comparisions_trigrams+png](https://github.com/cyschneck/Demand-Letter-Analysis/blob/main/demand_letters_output/comparisons_trigrams.png)
+![comparisions_quadgramss+png](https://github.com/cyschneck/Demand-Letter-Analysis/blob/main/demand_letters_output/comparisons_quadgrams.png)
