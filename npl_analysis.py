@@ -191,6 +191,7 @@ def plotComparisons(root_directory, comparison_dict):
 	for i, title in enumerate(titles):
 		plt.bar(x_word_label, titles_lst_of_lst[i], label = title) # plot multiple bar graphs in one graph
 	plt.xticks(rotation=90)
+	plt.tight_layout()
 	plt.ylabel("Occurrence")
 	plt.legend()
 	#plt.show()
